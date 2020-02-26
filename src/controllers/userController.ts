@@ -1,42 +1,52 @@
-const Users = require("../../models/userModel");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+import Users from "../models/userModel";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
-module.exports.register = async (req: Request, res: any) => {
-  const { name, phone, email, password }: any = req.body;
+export const register = async (req: Request, res: any) => {
+  const { name, phone, email, password, isSeller }: any = req.body;
   const error = validateUsers(name, phone, email, password);
   if (error.name || error.email || error.password) {
     return res.status(404).json({ error });
   }
-  let user = await Users.findOne({ email });
+  let user: any = await Users.findOne({ email });
   if (user)
     return res.status(404).json({ error: "Email taken, try another one" });
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(password, salt);
+  console.log(req.body);
+  const bool: boolean = isSeller === "seller" ? true : false;
 
   try {
-    const registerUser = {
+    const registerUser: RegisterInterface = {
       name,
       phone,
       email,
       password: hashedPassword,
-      createdAt: new Date().toISOString()
+      isSeller: bool
     };
 
     user = new Users(registerUser);
 
     const { SECRET_KEY } = process.env;
-    const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
-      SECRET_KEY
-    );
 
     await user.save();
+    const token: string = jwt.sign(
+      {
+        id: user.id,
+        phone: user.phone,
+        email: user.email,
+        name: user.name,
+        isSeller: user.isSeller
+      },
+      SECRET_KEY
+    );
+    res.header("x-auth", token);
     res.json({
       data: {
         id: user.id,
-        username: user.username,
+        name: user.name,
+        phone: user.phone,
         email: user.email
       },
       token
@@ -46,14 +56,14 @@ module.exports.register = async (req: Request, res: any) => {
   }
 };
 
-module.exports.login = async (req: Request, res: any) => {
+export const login = async (req: Request, res: any) => {
   const { email, password }: any = req.body;
   const error = validateAuth(email, password);
   if (error.email || error.password) {
     return res.status(404).json({ error });
   }
 
-  let user = await Users.findOne({ email });
+  let user: any = await Users.findOne({ email });
   if (!user) return res.status(404).json({ error: "You have not register" });
 
   const validPassword = await bcrypt.compare(password, user.password);
@@ -64,14 +74,22 @@ module.exports.login = async (req: Request, res: any) => {
   try {
     const { SECRET_KEY } = process.env;
     const token = jwt.sign(
-      { id: user.id, email: user.email, username: user.username },
+      {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phone: user.phone,
+        isSeller: user.isSeller
+      },
       SECRET_KEY
     );
 
+    res.header("x-auth", token);
     res.json({
       data: {
         id: user.id,
-        username: user.username,
+        name: user.name,
+        phone: user.phone,
         email: user.email
       },
       token
@@ -117,6 +135,18 @@ function validateUsers(
   return error;
 }
 
+export const getProfile = async (req: any, res: any) => {
+  try {
+    const { id } = req.params;
+    console.log(id);
+    const userProfile = await Users.findById(id);
+    console.log(req.params.id);
+    return res.json({ profile: userProfile });
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+};
+
 function validateAuth(email: string, password: string) {
   const error: LoginInterface = {
     email: "",
@@ -146,4 +176,5 @@ interface RegisterInterface {
   email: string;
   phone: string;
   password: string;
+  isSeller?: boolean;
 }

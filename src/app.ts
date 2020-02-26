@@ -2,12 +2,27 @@ import createError, { HttpError } from "http-errors";
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+import cors from "cors";
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+dotenv.config();
+
+const DB_URL = process.env["DB_URL"]
+mongoose
+  .connect(DB_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => console.log("db connected"))
+  .catch(() => console.log(`something went wrong`));
+
+import indexRouter from "./routes/pets";
+import usersRouter from "./routes/users";
 
 const app = express();
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -22,7 +37,12 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction) {
+app.use(function(
+  err: HttpError,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
@@ -32,4 +52,4 @@ app.use(function(err: HttpError, req: Request, res: Response, next: NextFunction
   res.render("error");
 });
 
-module.exports = app;
+export default app;
