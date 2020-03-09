@@ -52,7 +52,8 @@ exports.register = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 id: user.id,
                 name: user.name,
                 phone: user.phone,
-                email: user.email
+                email: user.email,
+                isSeller: user.isSeller
             },
             token
         });
@@ -88,7 +89,8 @@ exports.login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 id: user.id,
                 name: user.name,
                 phone: user.phone,
-                email: user.email
+                email: user.email,
+                isSeller: user.isSeller
             },
             token
         });
@@ -105,10 +107,10 @@ function validateUsers(name, phone, email, password) {
         password: ""
     };
     if (name.trim() === "") {
-        error.name = "Username is empty";
+        error.name = "name is empty";
     }
     if (phone.trim() === "") {
-        error.name = "Phone Number is empty";
+        error.phone = "Phone Number is empty";
     }
     else {
         if (phone.length < 4) {

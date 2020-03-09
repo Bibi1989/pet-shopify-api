@@ -40,6 +40,10 @@ const petSchema = new Schema({
     type: String,
     required: true
   },
+  phone: {
+    type: String,
+    required: true
+  },
   image_id: {
     type: String,
   },
@@ -48,7 +52,8 @@ const petSchema = new Schema({
     required: true
   },
   stock: {
-    type: Number
+    type: String,
+    default: "1"
   },
   user: {
     type: Schema.Types.ObjectId,

@@ -16,7 +16,7 @@ const cartModel_1 = __importDefault(require("../models/cartModel"));
 exports.createOrder = (body, req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
     //   console.log(id)
-    const { name, breed, description, price, image_url, category_id, user_id } = body;
+    const { name, breed, description, price, image_url, quantity, category_id, user_id } = body;
     console.log({ name: body.name, breed, price });
     try {
         let cart = new cartModel_1.default({
@@ -25,6 +25,7 @@ exports.createOrder = (body, req, res) => __awaiter(void 0, void 0, void 0, func
             price,
             description,
             image_url,
+            quantity,
             category_id: category_id,
             user_id
         });

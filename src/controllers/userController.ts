@@ -47,7 +47,8 @@ export const register = async (req: Request, res: any) => {
         id: user.id,
         name: user.name,
         phone: user.phone,
-        email: user.email
+        email: user.email,
+        isSeller: user.isSeller
       },
       token
     });
@@ -90,7 +91,8 @@ export const login = async (req: Request, res: any) => {
         id: user.id,
         name: user.name,
         phone: user.phone,
-        email: user.email
+        email: user.email,
+        isSeller: user.isSeller
       },
       token
     });
@@ -112,10 +114,10 @@ function validateUsers(
     password: ""
   };
   if (name.trim() === "") {
-    error.name = "Username is empty";
+    error.name = "name is empty";
   }
   if (phone.trim() === "") {
-    error.name = "Phone Number is empty";
+    error.phone = "Phone Number is empty";
   } else {
     if (phone.length < 4) {
       error.phone = "Phone number is less than 4 characters";

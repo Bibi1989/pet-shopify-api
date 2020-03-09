@@ -13,53 +13,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const animalModel_1 = __importDefault(require("../models/animalModel"));
-const path_1 = __importDefault(require("path"));
-const cloudinary = require("cloudinary");
-// import cloudinaryStorage from "multer-storage-cloudinary";
-const cloudinaryStorage = require("multer-storage-cloudinary");
-cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.API_KEY,
-    api_secret: process.env.API_SECRET
-});
-// const storages = cloudinaryStorage({
-//   cloudinary: cloudinary,
-//   folder: "pet",
-//   allowedFormats: ["jpg", "png"],
-//   transformation: [{ width: 500, height: 500, crop: "limit" }]
-// });
-// const storage = multer.diskStorage({
-//   // destination: function(req, file, cb) {
-//   //   cb(null, "public");
-//   // },
-//   filename: (req, file, cb) => {
-//     cb(
-//       null,
-//       file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-//     );
-//   }
-// });
-const checkFileType = (file, cb) => {
-    const filetypes = /jpeg|jpg|png|gif/;
-    const extensionName = filetypes.test(path_1.default.extname(file.originalname));
-    const mimeTypes = filetypes.test(file.mimetype);
-    if (extensionName && mimeTypes) {
-        return cb(null, true);
-    }
-    else {
-        return cb("error images only");
-    }
-};
-// const upload = multer({
-//   storage: storage,
-//   //   limits: { fileSize: 1000000 },
-//   fileFilter: (req, file, cb) => {
-//     checkFileType(file, cb);
-//   }
-// }).single("file");
 exports.createPets = (body, req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.user;
-    const { name, breed, description, age, price, stock, location } = body;
+    const { name, breed, description, age, price, stock, location, image_url, phone } = body;
     const error = validatePets(name, breed, price, description, age, location);
     if (error.age)
         return { error: error.age };
@@ -73,40 +29,20 @@ exports.createPets = (body, req, res) => __awaiter(void 0, void 0, void 0, funct
         return { error: error.description };
     if (error.location)
         return { error: error.location };
-    console.log(req.body);
-    // upload(req, res, err => {
-    //   if (err) return { error: "Cant upload image" };
-    //   if (req.file === undefined) {
-    //     return { error: "field is empty" };
-    //   } else {
-    //     path = `${req.path}`;
-    //   }
-    //   console.log("pic", req.file);
-    //   return pic;
-    // });
-    yield cloudinary.uploader.upload(req.files.image.path, (result) => __awaiter(void 0, void 0, void 0, function* () {
-        try {
-            console.log(result);
-            console.log("loc", location);
-            let animal = new animalModel_1.default({
-                name,
-                breed,
-                price,
-                description,
-                age,
-                stock,
-                location,
-                image_url: result.url,
-                image_id: result.public_id,
-                seller_id: id
-            });
-            console.log(animal);
-            return yield animal.save();
-        }
-        catch (error) {
-            return { error: error.message };
-        }
-    }));
+    let animal = new animalModel_1.default({
+        name,
+        breed,
+        price,
+        description,
+        age,
+        stock,
+        location,
+        image_url,
+        phone,
+        image_id: id,
+        seller_id: id
+    });
+    return yield animal.save();
 });
 exports.updatePets = (body, updateId) => __awaiter(void 0, void 0, void 0, function* () {
     const { name, breed, description, age, price, stock, location } = body;
@@ -131,7 +67,7 @@ exports.updatePets = (body, updateId) => __awaiter(void 0, void 0, void 0, funct
             age,
             price,
             location,
-            stock
+            stock,
         };
         const animal = yield animalModel_1.default.findByIdAndUpdate(updateId, updateObj, {
             new: true

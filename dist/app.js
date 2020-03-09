@@ -11,7 +11,7 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
-const DB_URL = process.env["DB_URL"];
+const DB_URL = process.env["MONGODB_URI"];
 mongoose_1.default
     .connect(DB_URL, {
     useNewUrlParser: true,

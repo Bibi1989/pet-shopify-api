@@ -30,8 +30,9 @@ const cartSchema = new mongoose_1.Schema({
         type: String,
         required: true
     },
-    stock: {
-        type: Number
+    quantity: {
+        type: String,
+        default: "1"
     },
     user: {
         type: mongoose_1.Schema.Types.ObjectId,

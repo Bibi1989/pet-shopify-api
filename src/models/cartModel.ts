@@ -29,8 +29,9 @@ const cartSchema = new Schema({
     type: String,
     required: true
   },
-  stock: {
-    type: Number
+  quantity: {
+    type: String,
+    default: "1"
   },
   user: {
     type: Schema.Types.ObjectId,

@@ -9,6 +9,7 @@ export const createOrder = async (body: Animal, req: any, res: any) => {
     description,
     price,
     image_url,
+    quantity,
     category_id,
     user_id
   }: Animal = body;
@@ -20,6 +21,7 @@ export const createOrder = async (body: Animal, req: any, res: any) => {
       price,
       description,
       image_url,
+      quantity,
       category_id: category_id,
       user_id
     });
@@ -64,10 +66,11 @@ interface Animal {
   description: string;
   age: string;
   location: string;
-  stock: number;
+  stock?: string;
   image_url: string;
   category_id: string;
   image_id: any;
   user_id: string;
+  quantity: string;
   // [key: string]:string|number|boolean;
 }

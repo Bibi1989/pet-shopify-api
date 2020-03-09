@@ -29,7 +29,7 @@ router.get("/animals/:id", (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(404).json({ error: "Something went wrong" });
     return res.json({ data: animal });
 }));
-router.post("/animals", [userAuthentication_1.auth, multipartyMiddleware], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post("/animals", userAuthentication_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const animal = yield animalsController_1.createPets(req.body, req, res);
     if (!animal)
         res.status(404).json({ error: "Something went wrong" });

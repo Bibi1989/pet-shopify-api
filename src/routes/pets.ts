@@ -25,8 +25,7 @@ router.get("/animals/:id", async (req: Request, res: Response) => {
 });
 
 router.post(
-  "/animals",
-  [auth, multipartyMiddleware],
+  "/animals", auth,
   async (req: Request, res: Response) => {
     const animal = await createPets(req.body, req, res);
     if (!animal) res.status(404).json({ error: "Something went wrong" });
