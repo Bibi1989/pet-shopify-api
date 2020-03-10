@@ -56,7 +56,6 @@ router.post("/orders", auth, async (req: Request, res: Response) => {
 
 router.delete(
   "/orders/:deleteId",
-  auth,
   async (req: Request, res: Response) => {
     const carts = await deleteCart(req);
     return res.json({ data: carts });
