@@ -49,8 +49,8 @@ router.get("/orders", async (req: any, res: Response) => {
   return res.json({ data: carts });
 });
 
-router.post("/orders", auth, async (req: Request, res: Response) => {
-  const carts = await createOrder(req.body, req, res);
+router.post("/orders", async (req: Request, res: Response) => {
+  const carts = await createOrder(req.body);
   return res.json({ data: carts });
 });
 

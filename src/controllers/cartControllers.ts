@@ -1,7 +1,6 @@
 import Carts from "../models/cartModel";
 
-export const createOrder = async (body: Animal, req: any, res: any) => {
-  const { id } = req.user;
+export const createOrder = async (body: Animal) => {
   //   console.log(id)
   const {
     name,
