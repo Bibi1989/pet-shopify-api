@@ -44,7 +44,7 @@ router.patch(
   }
 );
 
-router.get("/orders", auth, async (req: any, res: Response) => {
+router.get("/orders", async (req: any, res: Response) => {
   const carts = await getCarts();
   return res.json({ data: carts });
 });

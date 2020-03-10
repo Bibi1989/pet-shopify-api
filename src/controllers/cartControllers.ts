@@ -40,9 +40,9 @@ export const getCarts = async () => {
   }
 };
 
-export const getCart = async (id: string) => {
+export const getCart = async () => {
   try {
-    const cart = await Carts.findById(id);
+    const cart = await Carts.find();
     return cart;
   } catch (error) {
     return { error: error.message };
